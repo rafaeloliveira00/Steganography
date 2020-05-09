@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 import scipy.io.wavfile as sci_wav
 
@@ -26,6 +27,10 @@ def channel_count(data):
           Number of channels
 
     """
+    # if the tuple have only one element then there is no columns on the data
+    if len(data.shape) == 1:
+        return 1
+
     return data.shape[1]
 
 
@@ -54,6 +59,11 @@ def channel_bytes(data, channel):
 
     """
     assert channel_count(data) > channel, 'This data do not have the given channel'
+
+    # check if there is only 1 channel
+    if channel_count(data) == 1:
+        return list(data)
+
     return [s[channel] for s in data]
 
 
@@ -72,6 +82,11 @@ def replace_data_channel(data, data_channel, channel):
     assert channel_count(data) > channel, 'This data do not have the given channel'
 
     data_copy = data.copy()
+
+    # check if there is only 1 channel
+    if channel_count(data) == 1:
+        return np.asarray(data_channel)
+
     data_copy[:, channel] = data_channel[:]
 
     return data_copy
