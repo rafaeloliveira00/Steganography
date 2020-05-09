@@ -2,10 +2,10 @@ import matplotlib.pyplot as plot
 
 
 def show_plot(data, rate):
-    """Shows a spectrogram of the given data
+    """Shows a spectrogram of the given data channel
 
         Parameters:
-          data: Array containing the data
+          data: Array containing the data channel
           rate: frequency rate
     """
     plot.subplot(2, 1, 1)
