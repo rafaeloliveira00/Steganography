@@ -52,7 +52,6 @@ def hide_byte(array, byte_to_hide):
     bits_to_hide = '{:08b}'.format(byte_to_hide)
 
     for i, byte in enumerate(array_copy):
-        assert 0 <= byte <= 255, 'The byte must be between 0 and 255 (inclusive)'
         # modify the original byte and save it at the original location
         array_copy[i] = modify_bit(byte, int(bits_to_hide[i]))
 

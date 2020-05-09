@@ -43,6 +43,26 @@ def channel_bytes(data, channel):
     return [s[channel] for s in data]
 
 
+def replace_data_channel(data, data_channel, channel):
+    """Replace the data channel
+
+        Parameters:
+          data: Data from the wav file
+          data_channel: The data channel
+          channel: The number of the channel to replace the data
+
+        Returns:
+          Data of the wav file
+
+    """
+    assert channel_count(data) > channel, 'This data do not have the given channel'
+
+    data_copy = data.copy()
+    data_copy[:, channel] = data_channel[:]
+
+    return data_copy
+
+
 def read_wav_file(location):
     """Open a wav file and return the data as an array
 
