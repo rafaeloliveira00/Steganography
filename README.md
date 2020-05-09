@@ -6,5 +6,5 @@ Examples will be provided (folder examples) along the development of the project
 
 Requirements:
 ```
-python -m pip install numpy matplotlib scipy
+python -m pip install numpy matplotlib scipy more-itertools
 ```
