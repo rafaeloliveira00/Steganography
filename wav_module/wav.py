@@ -1,15 +1,16 @@
 import os
+
 import scipy.io.wavfile as sci_wav
 
 
 def bytes_count(data):
-    """Return the number of bytes
+    """Return the number of bytes per channel
 
         Parameters:
           data: Data from the wav file
 
         Returns:
-          Number of bytes
+          Number of bytes per channel
 
     """
     return data.shape[0]
@@ -26,6 +27,19 @@ def channel_count(data):
 
     """
     return data.shape[1]
+
+
+def bytes_to_hide_count(data):
+    """Return the number of bytes that can be hidden
+
+        Parameters:
+          data: Data from the wav file
+
+        Returns:
+          Number of bytes that can be hidden
+
+    """
+    return (bytes_count(data) * channel_count(data)) / 8
 
 
 def channel_bytes(data, channel):
@@ -112,3 +126,15 @@ def write_wav_file(location, data, rate):
         return False
 
     return True
+
+
+def show_information(file_data):
+    """Prints in console some information about the file
+
+        Parameters:
+          file_data: Data of the file
+
+    """
+    print(f"Number of channels: {channel_count(file_data)}")
+    print(f"Number of bytes per channel: {bytes_count(file_data)}")
+    print(f"Number of total bytes that can be hidden: {bytes_to_hide_count(file_data)}")
