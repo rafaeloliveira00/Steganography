@@ -1,4 +1,5 @@
 import more_itertools
+import random
 
 
 def check_size(n_bytes_file, n_bytes_message):
@@ -32,12 +33,14 @@ def modify_bit(number, bit):
     return (number & ~1) | ((bit << 0) & 1)
 
 
-def hide_byte(array, byte_to_hide):
+def hide_byte(array, byte_to_hide, index_dict=None, index=None):
     """Hides a byte in an array
 
         Parameters:
           array: Array of bytes (must be 8) as integers, of the file to hide the message
           byte_to_hide: The byte to hide as integer
+          index_dict: Dictionary containing the lists to shuffle the bytes
+          index: byte index of the message to hide
 
         Returns:
           Array with the hidden byte
@@ -51,6 +54,10 @@ def hide_byte(array, byte_to_hide):
 
     bits_to_hide = '{:08b}'.format(byte_to_hide)
 
+    # if the dictionary is not none then shuffle the byte
+    if index_dict is not None:
+        bits_to_hide = shuffle_elements(bits_to_hide, index_dict, index)
+
     for i, byte in enumerate(array_copy):
         # modify the original byte and save it at the original location
         array_copy[i] = modify_bit(byte, int(bits_to_hide[i]))
@@ -58,11 +65,13 @@ def hide_byte(array, byte_to_hide):
     return array_copy
 
 
-def retrieve_byte(array):
+def retrieve_byte(array, index_dict=None, index=None):
     """Retrieve a hidden byte from an array
 
         Parameters:
           array: Array of bytes (must be 8) as integers containing a hidden byte
+          index_dict: Dictionary containing the lists to shuffle the bytes
+          index: byte index of the message to hide
 
         Returns:
           The hidden byte as a integer
@@ -79,18 +88,23 @@ def retrieve_byte(array):
         # add to the string
         hidden_byte += hidden_bit
 
+    # if the dictionary is not none then shuffle the byte
+    if index_dict is not None:
+        hidden_byte = shuffle_elements(hidden_byte, index_dict, index)
+
     # convert the string to a integer
     hidden_byte = int(hidden_byte, 2)
 
     return hidden_byte
 
 
-def hide_bytes(array, bytes_to_hide):
+def hide_bytes(array, bytes_to_hide, index_dict=None):
     """Hides a set of bytes in an array
 
         Parameters:
           array: Array of bytes (must be at least 8) as integers, of the file to hide the message
           bytes_to_hide: List of bytes to hide in the array
+          index_dict: Dictionary containing the lists to shuffle the bytes
 
         Returns:
           Array with the hidden bytes
@@ -112,7 +126,7 @@ def hide_bytes(array, bytes_to_hide):
             byte = bytes_to_hide[i]
 
             # hide byte in the sub-array
-            result = hide_byte(sub_array, byte)
+            result = hide_byte(sub_array, byte, index_dict, i)
 
             # add the result to the output array
             array_output.extend(result)
@@ -127,18 +141,18 @@ def hide_bytes(array, bytes_to_hide):
     return array_output
 
 
-def retrieve_bytes(array, number_bytes_hidden):
+def retrieve_bytes(array, number_bytes_hidden, index_dict=None):
     """Retrieve the bytes hidden in the array
 
         Parameters:
           array: Array of bytes with the hidden message
           number_bytes_hidden: Number of hidden bytes
+          index_dict: Dictionary containing the lists to shuffle the bytes
 
         Returns:
           List containing the hidden bytes
 
     """
-
     assert check_size(len(array),
                       number_bytes_hidden), 'The array provided can not have the number of hidden bytes provided'
 
@@ -152,9 +166,80 @@ def retrieve_bytes(array, number_bytes_hidden):
             break
 
         # retrieve the hidden byte in the sub-array
-        byte = retrieve_byte(sub_array)
+        byte = retrieve_byte(sub_array, index_dict, i)
 
         # add the byte to the list
         array_output.append(byte)
 
     return array_output
+
+
+def shuffle_elements(byte, indexes_dict, index_number):
+    """Shuffle the elements of the list according to an list containing the indexes
+
+        Parameters:
+          byte: Bits of the byte in string form
+          indexes_dict: Dictionary containing the indexes
+          index_number: Number to get the list of the dict (last digit of the number)
+
+        Returns:
+          Byte shuffled
+
+    """
+    # get the last digit of the number
+    index = index_number % 10
+
+    # get the list corresponding to that index
+    indexes_list = indexes_dict[index]
+
+    result = []
+
+    # shuffle the values
+    for value in indexes_list:
+        result.append(byte[value])
+
+    # convert to string again
+    result = ''.join(map(str, result))
+
+    return result
+
+
+def generate_dictionary(num_lists, num_elements_list):
+    """Generate a dictionary of lists containing random values
+
+        Parameters:
+          num_lists: Number of lists that the dictionary will contain
+          num_elements_list: Number of elements that each list will contain
+
+        Returns:
+          Populated dictionary
+
+    """
+    dictionary = {}
+    for i in range(num_lists):
+        # TODO for testing purpose only
+        random.seed(4)
+        dictionary[i] = random.sample(range(num_elements_list), num_elements_list)
+
+    return dictionary
+
+
+def invert_dictionary(dictionary):
+    """invert the lists of the dictionary, it swap the index with the value
+
+        Parameters:
+          dictionary: Dictionary with the list of indexes
+
+        Returns:
+          Flipped dictionary
+
+    """
+    dictionary_copy = dictionary.copy()
+
+    for i in dictionary_copy:
+        list_copy = dictionary_copy[i].copy()
+        for j in range(8):
+            list_copy[j] = dictionary_copy[i].index(j)
+        dictionary_copy[i] = list_copy
+
+    return dictionary_copy

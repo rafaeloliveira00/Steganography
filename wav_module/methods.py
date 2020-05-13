@@ -3,13 +3,15 @@ from wav_module import wav
 import message
 
 
-def sequence_hide(audio_file, result_audio_file, message_file):
-    """Simple method to hide the message, it consists in hiding the message sequential along the channels
+def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
+    """Method to hide the message, it consists in hiding the message sequential along the channels,
+    if shuffle mode is activated then, every bit of every byte will be shuffled with a generated dictionary
 
         Parameters:
           audio_file: Location of the audio file
           result_audio_file: Location to save the modified audio file
           message_file: Location of the file to hide
+          shuffle: if true then the shuffle method will be used
 
         Returns:
           Number of bytes hidden
@@ -29,6 +31,12 @@ def sequence_hide(audio_file, result_audio_file, message_file):
 
     assert max_data > len(message_bytes), 'Not enough space to hide the message'
 
+    index_dict = None
+
+    if shuffle:
+        # generate the dictionary of indexes
+        index_dict = utils.generate_dictionary(10, 8)
+
     # loop every channel
     for i in range(channel_count):
         # get the bytes of the channel
@@ -46,7 +54,7 @@ def sequence_hide(audio_file, result_audio_file, message_file):
         message_bytes_sub_array = message_bytes[start:stop]
 
         # hide the bytes in the channel
-        modified_channel_bytes = utils.hide_bytes(channel_bytes, message_bytes_sub_array)
+        modified_channel_bytes = utils.hide_bytes(channel_bytes, message_bytes_sub_array, index_dict)
 
         # replace the data channel
         original_song = wav.replace_data_channel(original_song, modified_channel_bytes, i)
@@ -60,13 +68,14 @@ def sequence_hide(audio_file, result_audio_file, message_file):
     return len(message_bytes)
 
 
-def sequence_retrieve(audio_file, bytes_length, result_file):
+def sequence_retrieve(audio_file, bytes_length, result_file, dictionary=None):
     """Retrieve the hidden message using the sequence method
 
         Parameters:
           audio_file: Location of the audio file
           bytes_length: Number of bytes hidden
           result_file: Location of the obtained file
+          dictionary: Dictionary containing the lists of indexes
 
         Returns:
           Number of bytes hidden
@@ -104,7 +113,7 @@ def sequence_retrieve(audio_file, bytes_length, result_file):
             bytes_to_get = bytes_left
             bytes_left = 0
 
-        extracted_bytes = utils.retrieve_bytes(channel_bytes, bytes_to_get)
+        extracted_bytes = utils.retrieve_bytes(channel_bytes, bytes_to_get, dictionary)
 
         # add the extracted bytes to the final result
         extracted_bytes_array.extend(extracted_bytes)
