@@ -248,7 +248,7 @@ def replace_file_extension(file_name, extension):
           Extension of the file as string
 
     """
-    (prefix, _, _) = file_name.rpartition('.')
+    prefix, _, _ = file_name.rpartition('.')
     return prefix + '.' + extension
 
 

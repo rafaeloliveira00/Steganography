@@ -1,6 +1,82 @@
-import utils
 from wav_module import wav
 import message
+import utils
+import os
+
+
+def hide(audio_file_input, audio_file_output, message_file, will_shuffle=False):
+    """Method responsible to manage the files, it will convert the audio formats if necessary before starting the
+    coding of the data
+
+        Parameters:
+          audio_file_input: Location of the audio file
+          audio_file_output: Location to save the modified audio file
+          message_file: Location of the file to hide
+          will_shuffle: if true then the shuffle method will be used
+
+    """
+    input_input_extension = utils.get_file_extension(audio_file_input)
+    # if the file extension is not wav then convert it to wav extension
+    if input_input_extension != 'wav':
+        new_file = utils.replace_file_extension(audio_file_input, 'wav')
+        wav.convert_audio_file(audio_file_input, new_file)
+        audio_file_input = new_file
+
+    # get the extension of the output file
+    output_input_extension = utils.get_file_extension(audio_file_output)
+    # if is flac file, convert to flac
+    if output_input_extension == 'flac':
+        # first save with wav extension and after the file was been save, convert the file to flac
+        audio_file_output = utils.replace_file_extension(audio_file_output, 'wav')
+    # if is wav file, do nothing
+    elif output_input_extension == 'wav':
+        pass
+    # if not, then it was given an incorrect extension of a file
+    else:
+        assert 'The output file can only be .wav or .flac types'
+
+    # begin the encoding
+    sequence_hide(audio_file_input, audio_file_output, message_file, will_shuffle)
+
+    # if the user wanted an flac file, lets convert it
+    if output_input_extension == 'flac':
+        new_file = utils.replace_file_extension(audio_file_output, 'flac')
+        wav.convert_audio_file(audio_file_output, new_file, True)
+
+    # check if the original file was a wav file, if note remove it as is a temporary file
+    if input_input_extension != 'wav':
+        os.remove(audio_file_input)
+
+
+def retrieve(audio_file_input, key_file):
+    """Method responsible to manage the files, it will convert the audio formats if necessary before starting the
+    decoding of the data
+
+        Parameters:
+          audio_file_input: Location of the audio file
+          key_file: Location of the key file
+
+    """
+    # get the extension of the file, to check if conversion is necessary
+    output_input_extension = utils.get_file_extension(audio_file_input)
+    # if is flac file, convert to wav to perform the operations
+    if output_input_extension == 'flac':
+        # first save with wav extension and after the file was been save, convert the file to flac
+        new_file = utils.replace_file_extension(audio_file_input, 'wav')
+        wav.convert_audio_file(audio_file_input, new_file)
+        audio_file_input = new_file
+    # if is wav file, do nothing
+    elif output_input_extension == 'wav':
+        pass
+    # if not, then it was given an incorrect extension of a file
+    else:
+        assert 'The output file can only be .wav or .flac types'
+
+    sequence_retrieve(audio_file_input, key_file)
+
+    # if the input was a flac file, then delete the temporary file
+    if output_input_extension == 'flac':
+        os.remove(audio_file_input)
 
 
 def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
@@ -79,6 +155,8 @@ def sequence_retrieve(audio_file, key_file):
     """
     # open the audio file
     original_song, rate = wav.read_wav_file(audio_file)
+
+    assert original_song is not None, 'Error opening the input file!'
 
     # get number of channels
     channel_count = wav.channel_count(original_song)
