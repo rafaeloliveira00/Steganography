@@ -1,5 +1,7 @@
 import more_itertools
 import random
+import json
+import os
 
 
 def check_size(n_bytes_file, n_bytes_message):
@@ -217,15 +219,41 @@ def generate_dictionary(num_lists, num_elements_list):
     """
     dictionary = {}
     for i in range(num_lists):
-        # TODO for testing purpose only
-        random.seed(4)
         dictionary[i] = random.sample(range(num_elements_list), num_elements_list)
 
     return dictionary
 
 
+def get_file_extension(file_name):
+    """Get the extension of the file
+
+        Parameters:
+          file_name: File name to extract the extension
+
+        Returns:
+          Extension of the file as string
+
+    """
+    return os.path.splitext(file_name)[1][1:]
+
+
+def replace_file_extension(file_name, extension):
+    """Replace the extension of a file name
+
+        Parameters:
+          file_name: File name to change the extension
+          extension: extension to change to
+
+        Returns:
+          Extension of the file as string
+
+    """
+    (prefix, _, _) = file_name.rpartition('.')
+    return prefix + '.' + extension
+
+
 def invert_dictionary(dictionary):
-    """invert the lists of the dictionary, it swap the index with the value
+    """Invert the lists of the dictionary, it swap the index with the value
 
         Parameters:
           dictionary: Dictionary with the list of indexes

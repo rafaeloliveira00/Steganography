@@ -1,7 +1,9 @@
-import os
-import numpy as np
-
 import scipy.io.wavfile as sci_wav
+import numpy as np
+import subprocess
+import utils
+import json
+import os
 
 
 def bytes_count(data):
@@ -153,3 +155,97 @@ def show_information(file_data):
     print(f"Number of channels: {channel_count(file_data)}")
     print(f"Number of bytes per channel: {bytes_count(file_data)}")
     print(f"Number of total bytes that can be hidden: {bytes_to_hide_count(file_data)}")
+
+
+def check_ffmpeg():
+    """Check if FFMPEG is installed on the system
+
+         Returns:
+          True if is installed otherwise False
+
+    """
+    try:
+        subprocess.call(['ffmpeg'], stderr=subprocess.DEVNULL)
+
+    except FileNotFoundError:
+        return False
+
+    return True
+
+
+def convert_audio_file(input_file, output_file, delete=False):
+    """Convert the format of an audio file to another, the output file will be overwritten
+
+        Parameters:
+          input_file: File to be converted
+          output_file: Destination of the file
+          delete: True to delete the original file after the conversion
+
+        Returns:
+          True if it succeeds otherwise False
+
+    """
+    assert check_ffmpeg(), 'FFMPEG must be installed on the system'
+    try:
+        subprocess.call(['ffmpeg', '-i', input_file, '-y', output_file], stderr=subprocess.DEVNULL)
+    except FileNotFoundError:
+        return False
+
+    if delete:
+        os.remove(input_file)
+
+    return True
+
+
+def generate_audio_key_file(file_name, message_length, indexes_dictionary=None):
+    """Generates the file necessary to retrieve the message
+
+        Parameters:
+          file_name: Name of the file hidden
+          indexes_dictionary: Dictionary with the list of indexes
+          message_length: Length of the file hidden
+
+    """
+    dictionary = {
+        "file_name": file_name,
+        "length": message_length
+    }
+
+    # if the indexes_dictionary is None then the shuffle method was not applied
+    if indexes_dictionary is not None:
+        # invert the dictionary
+        indexes_dictionary_inverted = utils.invert_dictionary(indexes_dictionary)
+        dictionary["method"] = "shuffle"
+        dictionary["indexes_dictionary"] = indexes_dictionary_inverted
+    else:
+        dictionary["method"] = "simple"
+
+    with open('keys', 'w') as fp:
+        json.dump(dictionary, fp)
+
+
+def read_audio_key_file(location):
+    """Read the file to retrieve essential values to retrieve the message
+
+           Parameters:
+             location: Location of file
+
+           Returns:
+             Dictionary containing the information
+
+       """
+
+    try:
+        with open(location) as json_file:
+            data = json.load(json_file)
+
+        # check if the method is shuffle
+        if data['method'] == 'shuffle':
+            # convert the indexes dictionary keys to int
+            data['indexes_dictionary'] = {int(k): v for k, v in data['indexes_dictionary'].items()}
+    except FileNotFoundError:
+        assert 'Key file not found'
+    except KeyError:
+        assert 'Key file is incorrect'
+
+    return data

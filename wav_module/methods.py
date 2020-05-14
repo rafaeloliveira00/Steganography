@@ -5,16 +5,14 @@ import message
 
 def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
     """Method to hide the message, it consists in hiding the message sequential along the channels,
-    if shuffle mode is activated then, every bit of every byte will be shuffled with a generated dictionary
+    if shuffle mode is activated then, every bit of every byte will be shuffled with a generated dictionary.
+    After the message is hidden a file is created to retrieve the original message
 
         Parameters:
           audio_file: Location of the audio file
           result_audio_file: Location to save the modified audio file
           message_file: Location of the file to hide
           shuffle: if true then the shuffle method will be used
-
-        Returns:
-          Number of bytes hidden
 
     """
     # open the audio file
@@ -62,20 +60,18 @@ def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
     # create the file
     wav.write_wav_file(result_audio_file, original_song, rate)
 
+    # generate the file to retrieve the message
+    wav.generate_audio_key_file(message_file, len(message_bytes), index_dict)
+
     print('File created successfully')
 
-    # return the number of bytes hidden
-    return len(message_bytes)
 
-
-def sequence_retrieve(audio_file, bytes_length, result_file, dictionary=None):
+def sequence_retrieve(audio_file, key_file):
     """Retrieve the hidden message using the sequence method
 
         Parameters:
           audio_file: Location of the audio file
-          bytes_length: Number of bytes hidden
-          result_file: Location of the obtained file
-          dictionary: Dictionary containing the lists of indexes
+          key_file: Location of the file containing the keys
 
         Returns:
           Number of bytes hidden
@@ -90,7 +86,21 @@ def sequence_retrieve(audio_file, bytes_length, result_file, dictionary=None):
     # get the number of bytes that can be hidden
     max_data = wav.bytes_to_hide_count(original_song)
 
+    # read the keys file
+    dictionary = None
+
+    # retrieve from the file the data
+    keys_data = wav.read_audio_key_file(key_file)
+
+    bytes_length = keys_data['length']
+
     assert max_data > bytes_length, 'This data can not have the amount of bytes given'
+
+    # check if method is shuffle
+    if keys_data['method'] == 'shuffle':
+        dictionary = keys_data['indexes_dictionary']
+
+    result_file = keys_data['file_name']
 
     # array with the bytes extracted
     extracted_bytes_array = []
