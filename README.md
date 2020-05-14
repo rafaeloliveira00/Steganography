@@ -4,7 +4,8 @@ Project in development in python capable to hide any kind of file in a audio, im
 
 For now only audio steganography is developed.
 
-##Hide methods
+**Hide methods**
+
 One of the methods developed to this project is called Shuffle method, it consists in shuffling the bits in a random
 order, generating a file that will be necessary to retrieve the hidden message, making impossible to retrieve without it
 as the number of possible combinations is 146 313 216 000. The other is the simple method, it only saves the bytes in sequence order.
@@ -16,7 +17,7 @@ python -m pip install numpy matplotlib scipy more-itertools
 
 To work on audio files rather than wav, it is necessary to have FFMPEG installed on the system.
 
-###How to execute
+**How to execute**
 
 **Help:**
 ```
