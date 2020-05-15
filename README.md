@@ -15,10 +15,11 @@ as the number of possible combinations is 146 313 216 000. The other is the simp
 python -m pip install numpy matplotlib scipy more-itertools
 ```
 
-To work on audio files rather than wav, it is necessary to have FFMPEG installed on the system.
+# Audio
 
-#Audio
-**How to execute**
+To work on audio files rather than wav, it is necessary to have FFMPEG installed on the system. The input file may be any audio format but the output must be a lossless file type (e.g. wav, flac)
+
+## How to execute
 
 **Help:**
 ```
@@ -35,10 +36,10 @@ py main.py audio -i original_song.mp3 -o song_with_message.flac -m somezip.zip -
 py main.py audio -i song_with_message.flac -k keys -decode
 ```
 
-#Image
+# Image
 Only lossless image format can be used (e.g. PNG), otherwise the hidden message can't be retrieved.
 
-**How to execute**
+## How to execute
 
 **Help:**
 ```
