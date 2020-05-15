@@ -150,9 +150,6 @@ def sequence_retrieve(audio_file, key_file):
           audio_file: Location of the audio file
           key_file: Location of the file containing the keys
 
-        Returns:
-          Number of bytes hidden
-
     """
     # open the audio file
     original_song, rate = wav.read_wav_file(audio_file)
