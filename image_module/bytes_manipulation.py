@@ -20,7 +20,7 @@ def check_size(frame, n_bytes_message):
     return t >= n_bytes_message
 
 
-def hide_byte(array, byte_to_hide):
+def hide_byte(array, byte_to_hide, index_dict=None, index=None):
     """Hides a byte in an array, the array consists in 3 pixels, where each element are 3 bytes one for each color
     channel (RGB)
 
@@ -28,6 +28,8 @@ def hide_byte(array, byte_to_hide):
              array: Array of elements (must be 3) representing 3 pixels, the element of each inner element are 3
                 bytes represented in integers, one for each color channel
              byte_to_hide: The byte to hide as integer
+             index_dict: Dictionary containing the lists to shuffle the bytes
+             index: byte index of the message to hide
 
            Returns:
              Array with the hidden byte
@@ -38,6 +40,10 @@ def hide_byte(array, byte_to_hide):
     array_copy = array.copy()
 
     bits_to_hide = '{:08b}'.format(byte_to_hide)
+
+    # if the dictionary is not none then shuffle the byte
+    if index_dict is not None:
+        bits_to_hide = utils.shuffle_elements(bits_to_hide, index_dict, index)
 
     for i, pixel in enumerate(array):
 
@@ -54,11 +60,13 @@ def hide_byte(array, byte_to_hide):
     return array_copy
 
 
-def retrieve_byte(array):
+def retrieve_byte(array, index_dict=None, index=None):
     """Retrieve a hidden byte from an array
 
         Parameters:
           array: Array containing 3 pixels
+          index_dict: Dictionary containing the lists to shuffle the bytes
+          index: byte index of the message to hide
 
         Returns:
           The hidden byte as a integer
@@ -84,6 +92,10 @@ def retrieve_byte(array):
             hidden_bit = '{:08b}'.format(pixel[2])
             hidden_bit = hidden_bit[-1]
             hidden_byte += hidden_bit
+
+    # if the dictionary is not none then shuffle the byte
+    if index_dict is not None:
+        hidden_byte = utils.shuffle_elements(hidden_byte, index_dict, index)
 
     # convert the string to a integer
     hidden_byte = int(hidden_byte, 2)
@@ -119,7 +131,7 @@ def hide_bytes(array, bytes_to_hide, index_dict=None):
             byte = bytes_to_hide[i]
 
             # hide byte in the sub-array
-            result = hide_byte(sub_array, byte)
+            result = hide_byte(sub_array, byte, index_dict, i)
 
             # add the result to the output array
             array_output.extend(result)
@@ -159,7 +171,7 @@ def retrieve_bytes(array, number_bytes_hidden, index_dict=None):
             break
 
         # retrieve the hidden byte in the sub-array
-        byte = retrieve_byte(sub_array)
+        byte = retrieve_byte(sub_array, index_dict, i)
 
         # add the byte to the list
         array_output.append(byte)
@@ -167,12 +179,13 @@ def retrieve_bytes(array, number_bytes_hidden, index_dict=None):
     return array_output
 
 
-def hide_in_frame(frame, bytes_to_hide):
+def hide_in_frame(frame, bytes_to_hide, index_dict=None):
     """Hide the given bytes in the frame
 
         Parameters:
           frame: Array of bytes with the hidden message
           bytes_to_hide: Number of hidden bytes
+          index_dict:  Dictionary containing the lists to shuffle the bytes
 
         Returns:
           List containing the hidden bytes
@@ -189,7 +202,7 @@ def hide_in_frame(frame, bytes_to_hide):
     row_vector = frame.reshape(1, row_vector, 3)[0]
 
     # hide the bytes and get the result
-    result = hide_bytes(row_vector, bytes_to_hide)
+    result = hide_bytes(row_vector, bytes_to_hide, index_dict)
 
     # transform to numpy array to reshape
     result = np.array(result)
@@ -199,12 +212,13 @@ def hide_in_frame(frame, bytes_to_hide):
     return result
 
 
-def retrieve_in_frame(frame, bytes_length):
+def retrieve_in_frame(frame, bytes_length, index_dict=None):
     """Retrieve the hidden bytes in the frame
 
         Parameters:
           frame: Array of bytes with the hidden message
           bytes_length: Number of bytes to retrieve
+          index_dict:  Dictionary containing the lists to shuffle the bytes
 
         Returns:
           List containing the hidden bytes
@@ -221,6 +235,6 @@ def retrieve_in_frame(frame, bytes_length):
     row_vector = frame.reshape(1, row_vector, 3)[0]
 
     # retrieve the bytes of the image
-    result = retrieve_bytes(row_vector, bytes_length)
+    result = retrieve_bytes(row_vector, bytes_length, index_dict)
 
     return result

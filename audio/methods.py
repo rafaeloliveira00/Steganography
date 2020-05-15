@@ -110,7 +110,7 @@ def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
 
     if shuffle:
         # generate the dictionary of indexes
-        index_dict = utils.generate_dictionary(10, 8)
+        index_dict = utils.generate_dictionary(10)
 
     # loop every channel
     for i in range(channel_count):
@@ -137,8 +137,11 @@ def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
     # create the file
     wav.write_wav_file(result_audio_file, original_song, rate)
 
+    # get the file name
+    message_file_name = os.path.basename(message_file)
+
     # generate the file to retrieve the message
-    wav.generate_audio_key_file(message_file, len(message_bytes), index_dict)
+    utils.generate_key_file(message_file_name, len(message_bytes), index_dict)
 
     print('File created successfully')
 
@@ -166,7 +169,7 @@ def sequence_retrieve(audio_file, key_file):
     dictionary = None
 
     # retrieve from the file the data
-    keys_data = wav.read_audio_key_file(key_file)
+    keys_data = utils.read_key_file(key_file)
 
     bytes_length = keys_data['length']
 

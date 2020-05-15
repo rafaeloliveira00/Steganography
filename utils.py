@@ -1,4 +1,6 @@
 import random
+import json
+import sys
 import os
 
 
@@ -48,12 +50,11 @@ def shuffle_elements(byte, indexes_dict, index_number):
     return result
 
 
-def generate_dictionary(num_lists, num_elements_list):
+def generate_dictionary(num_lists):
     """Generate a dictionary of lists containing random values
 
         Parameters:
           num_lists: Number of lists that the dictionary will contain
-          num_elements_list: Number of elements that each list will contain
 
         Returns:
           Populated dictionary
@@ -61,9 +62,30 @@ def generate_dictionary(num_lists, num_elements_list):
     """
     dictionary = {}
     for i in range(num_lists):
-        dictionary[i] = random.sample(range(num_elements_list), num_elements_list)
+        dictionary[i] = random.sample(range(8), 8)
 
     return dictionary
+
+
+def invert_dictionary(dictionary):
+    """Invert the lists of the dictionary, it swap the index with the value
+
+        Parameters:
+          dictionary: Dictionary with the list of indexes
+
+        Returns:
+          Flipped dictionary
+
+    """
+    dictionary_copy = dictionary.copy()
+
+    for i in dictionary_copy:
+        list_copy = dictionary_copy[i].copy()
+        for j in range(8):
+            list_copy[j] = dictionary_copy[i].index(j)
+        dictionary_copy[i] = list_copy
+
+    return dictionary_copy
 
 
 def get_file_extension(file_name):
@@ -94,22 +116,57 @@ def replace_file_extension(file_name, extension):
     return prefix + '.' + extension
 
 
-def invert_dictionary(dictionary):
-    """Invert the lists of the dictionary, it swap the index with the value
+def generate_key_file(file_name, message_length, indexes_dictionary=None):
+    """Generates the file necessary to retrieve the message
 
         Parameters:
-          dictionary: Dictionary with the list of indexes
-
-        Returns:
-          Flipped dictionary
+          file_name: Name of the file hidden
+          indexes_dictionary: Dictionary with the list of indexes
+          message_length: Length of the file hidden
 
     """
-    dictionary_copy = dictionary.copy()
+    dictionary = {
+        "file_name": file_name,
+        "length": message_length
+    }
 
-    for i in dictionary_copy:
-        list_copy = dictionary_copy[i].copy()
-        for j in range(8):
-            list_copy[j] = dictionary_copy[i].index(j)
-        dictionary_copy[i] = list_copy
+    # if the indexes_dictionary is None then the shuffle method was not applied
+    if indexes_dictionary is not None:
+        # invert the dictionary
+        indexes_dictionary_inverted = invert_dictionary(indexes_dictionary)
+        dictionary["method"] = "shuffle"
+        dictionary["indexes_dictionary"] = indexes_dictionary_inverted
+    else:
+        dictionary["method"] = "simple"
 
-    return dictionary_copy
+    with open('keys', 'w') as fp:
+        json.dump(dictionary, fp)
+
+
+def read_key_file(location):
+    """Read the file to retrieve the indexes list
+
+           Parameters:
+             location: Location of file
+
+           Returns:
+             Dictionary containing the information
+
+       """
+
+    try:
+        with open(location) as json_file:
+            data = json.load(json_file)
+
+        # check if the method is shuffle
+        if data['method'] == 'shuffle':
+            # convert the indexes dictionary keys to int
+            data['indexes_dictionary'] = {int(k): v for k, v in data['indexes_dictionary'].items()}
+    except FileNotFoundError:
+        print("The key file doesn't exist or no read permissions")
+        sys.exit()
+    except KeyError:
+        print("Key file is invalid")
+        sys.exit()
+
+    return data

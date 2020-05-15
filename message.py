@@ -1,5 +1,6 @@
-import os
 import numpy
+import sys
+import os
 
 
 def read_file(location):
@@ -17,7 +18,8 @@ def read_file(location):
     try:
         array_bytes = numpy.fromfile(location, dtype="uint8")
     except FileNotFoundError:
-        assert "The file doesn't exists or no read permissions"
+        print("The file doesn't exist or no read permissions")
+        sys.exit()
 
     return array_bytes
 
@@ -44,7 +46,7 @@ def write_file(location, byte_array):
         with open(location, 'wb') as f:
             f.write(byte_array)
     except PermissionError:
-        print('No permissions to write in the given directory')
-        return False
+        print("The message file doesn't exist or no read permissions")
+        sys.exit()
 
     return True
