@@ -27,9 +27,13 @@ def main(args_dictionary):
                 sys.exit()
 
             # if no method specified then use the basic method
-            elif 'operation_method' not in args_dictionary:
+            if 'operation_method' not in args_dictionary:
                 print('No operation method defined, using basic method!')
                 args_dictionary['operation_method'] = 'basic'
+
+            if 'output_file' not in args_dictionary:
+                output_file = utils.replace_file_extension(args_dictionary['input_file'], 'wav')
+                args_dictionary['output_file'] = 'hidden_' + output_file
 
             will_shuffle = True if args_dictionary['operation_method'] == 'shuffle' else False
             input_file = args_dictionary['input_file']

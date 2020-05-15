@@ -2,6 +2,7 @@ from image_module import bytes_manipulation as bm
 import cv2 as cv
 import message
 import utils
+import sys
 import os
 
 
@@ -18,6 +19,10 @@ def sequence_hide(image_file, result_file, message_file, shuffle=False):
 
     # open the image file and retrieve the data
     frame = cv.imread(image_file)
+
+    if frame is None:
+        print('Error opening the image file')
+        sys.exit()
 
     # open the file to hide and get the bytes
     message_bytes = message.read_file(message_file)
@@ -54,6 +59,10 @@ def sequence_retrieve(image_file, key_file):
 
     # open the image file
     frame = cv.imread(image_file)
+
+    if frame is None:
+        print('Error opening the image file')
+        sys.exit()
 
     # retrieve from the file the data
     keys_data = utils.read_key_file(key_file)

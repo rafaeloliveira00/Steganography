@@ -1,6 +1,21 @@
-from audio import commands
-import utils
+from image_module import commands as image_commands
+from audio import commands as audio_commands
+from os import path
 import sys
+
+
+def check_file(file, name):
+    """Check if the file exists
+
+        Parameters:
+           file: file location
+           name: type of the file
+
+    """
+    if not path.exists(file):
+        print(f'{name} not found or no read permissions')
+        sys.exit()
+
 
 help_message = '''
 The first argument must be the type of steganography that you want (audio/image/video) only audio is working wight now.
@@ -17,6 +32,12 @@ The first argument must be the type of steganography that you want (audio/image/
 -info will show information about the audio file
 -plot will show a spectrogram of the given file. To specify the channel to show in the plot use -c otherwise the first
     channel will be displayed
+
+-- Image --
+-encode simple|shuffle define that the message will be hidden using one of the given methods (if no method is defined, 
+    the simple method will be used)
+-decode specify that the message will be decoded
+-info will show information about the audio file
            '''
 
 # get the arguments
@@ -58,30 +79,32 @@ elif '-help' in args:
 
 # get input file
 if '-i' in args:
-    args_dictionary['input_file'] = args[args.index('-i') + 1]
+    input_file = args[args.index('-i') + 1]
+    check_file(input_file, 'Input file')
+    args_dictionary['input_file'] = input_file
 
 # get output file
 if '-o' in args:
     args_dictionary['output_file'] = args[args.index('-o') + 1]
-else:
-    if 'input_file' in args_dictionary:
-        output_file = utils.replace_file_extension(args_dictionary['input_file'], 'wav')
-        args_dictionary['output_file'] = 'hidden_' + output_file
 
 # get message file
 if '-m' in args:
-    args_dictionary['message_file'] = args[args.index('-m') + 1]
+    message_file = args[args.index('-m') + 1]
+    check_file(message_file, 'Message file')
+    args_dictionary['message_file'] = message_file
 
 # get key file
 if '-k' in args:
-    args_dictionary['key_file'] = args[args.index('-k') + 1]
+    key_file = args[args.index('-k') + 1]
+    check_file(key_file, 'Key file')
+    args_dictionary['key_file'] = key_file
 
 # get the channel (for plot)
 if '-c' in args:
     args_dictionary['channel'] = args[args.index('-c') + 1]
 
-if steganography_type != 'audio':
-    print('First argument must be audio!')
+if steganography_type != 'audio' and steganography_type != 'image':
+    print("First argument must be 'audio' or 'image'!")
     sys.exit()
 elif 'operation' not in args_dictionary:
     print('Missing operation!')
@@ -89,6 +112,6 @@ elif 'operation' not in args_dictionary:
 
 # redirect the information to the right script
 if steganography_type == 'audio':
-    commands.main(args_dictionary)
+    audio_commands.main(args_dictionary)
 elif steganography_type == 'image':
-    pass
+    image_commands.main(args_dictionary)
