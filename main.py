@@ -1,4 +1,4 @@
-from wav_module import commands
+from audio import commands
 import utils
 import sys
 
@@ -11,10 +11,12 @@ The first argument must be the type of steganography that you want (audio/image/
 -m location of the file to hide
 
 -- Audio --
--encode simple|shuffle define that the message will be hidden using one of the given methods (if no method is defined, the simple method will be used)
+-encode simple|shuffle define that the message will be hidden using one of the given methods (if no method is defined, 
+    the simple method will be used)
 -decode specify that the message will be decoded
 -info will show information about the audio file
--plot will show a spectrogram of the given file. To specify the channel to show in the plot use -c otherwise the first channel will be displayed
+-plot will show a spectrogram of the given file. To specify the channel to show in the plot use -c otherwise the first
+    channel will be displayed
            '''
 
 # get the arguments

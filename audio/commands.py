@@ -1,6 +1,6 @@
-from wav_module import methods
-from wav_module import wav
-from wav_module import plot
+from audio import methods
+from audio import wav
+from audio import plot
 import utils
 import sys
 

@@ -1,4 +1,5 @@
-from wav_module import wav
+from audio import bytes_manipulation as bm
+from audio import wav
 import message
 import utils
 import os
@@ -128,7 +129,7 @@ def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
         message_bytes_sub_array = message_bytes[start:stop]
 
         # hide the bytes in the channel
-        modified_channel_bytes = utils.hide_bytes(channel_bytes, message_bytes_sub_array, index_dict)
+        modified_channel_bytes = bm.hide_bytes(channel_bytes, message_bytes_sub_array, index_dict)
 
         # replace the data channel
         original_song = wav.replace_data_channel(original_song, modified_channel_bytes, i)
@@ -201,7 +202,7 @@ def sequence_retrieve(audio_file, key_file):
             bytes_to_get = bytes_left
             bytes_left = 0
 
-        extracted_bytes = utils.retrieve_bytes(channel_bytes, bytes_to_get, dictionary)
+        extracted_bytes = bm.retrieve_bytes(channel_bytes, bytes_to_get, dictionary)
 
         # add the extracted bytes to the final result
         extracted_bytes_array.extend(extracted_bytes)
