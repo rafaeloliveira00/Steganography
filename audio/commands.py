@@ -66,8 +66,8 @@ def main(args_dictionary):
 
         # information option
         elif args_dictionary['operation'] == 'info':
-            data, _ = wav.read_wav_file(args_dictionary['input_file'])
-            wav.show_information(data)
+            data, rate = wav.read_wav_file(args_dictionary['input_file'])
+            wav.show_information(data, rate)
 
         # show spectrogram
         elif args_dictionary['operation'] == 'plot':
