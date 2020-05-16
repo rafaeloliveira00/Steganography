@@ -1,3 +1,4 @@
+from  os import path
 import random
 import json
 import sys
@@ -120,13 +121,25 @@ def generate_key_file(file_name, message_length, indexes_dictionary=None):
     """Generates the file necessary to retrieve the message
 
         Parameters:
-          file_name: Name of the file hidden
+          file_name: Location of the file to hide
           indexes_dictionary: Dictionary with the list of indexes
           message_length: Length of the file hidden
 
     """
+
+    # get the name of the file
+    message_file_name = os.path.basename(file_name)
+
+    # location to save the key file
+    file_directory = path.dirname(file_name)
+
+    if file_directory != '':
+        final_name = file_directory + '/' + 'keys'
+    else:
+        final_name = 'keys'
+
     dictionary = {
-        "file_name": file_name,
+        "file_name": message_file_name,
         "length": message_length
     }
 
@@ -139,7 +152,7 @@ def generate_key_file(file_name, message_length, indexes_dictionary=None):
     else:
         dictionary["method"] = "simple"
 
-    with open('keys', 'w') as fp:
+    with open(final_name, 'w') as fp:
         json.dump(dictionary, fp)
 
 

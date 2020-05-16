@@ -1,5 +1,6 @@
 from audio import bytes_manipulation as bm
 from audio import wav
+from os import path
 import message
 import utils
 import os
@@ -137,11 +138,8 @@ def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
     # create the file
     wav.write_wav_file(result_audio_file, original_song, rate)
 
-    # get the file name
-    message_file_name = os.path.basename(message_file)
-
     # generate the file to retrieve the message
-    utils.generate_key_file(message_file_name, len(message_bytes), index_dict)
+    utils.generate_key_file(message_file, len(message_bytes), index_dict)
 
     print('File created successfully')
 
@@ -207,7 +205,14 @@ def sequence_retrieve(audio_file, key_file):
         # add the extracted bytes to the final result
         extracted_bytes_array.extend(extracted_bytes)
 
-    result = message.write_file(result_file, extracted_bytes_array)
+    # calculate the output file location
+    file_directory = path.dirname(audio_file)
+    if file_directory != '':
+        final_name = file_directory + '/' + result_file
+    else:
+        final_name = result_file
+
+    result = message.write_file(final_name, extracted_bytes_array)
 
     if result:
         print('Message extracted successful')

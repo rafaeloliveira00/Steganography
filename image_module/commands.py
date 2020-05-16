@@ -1,5 +1,6 @@
 from image_module import methods
 from image_module import image
+from os import path
 import cv2 as cv
 import sys
 
@@ -29,7 +30,15 @@ def main(args_dictionary):
             args_dictionary['operation_method'] = 'basic'
 
         if 'output_file' not in args_dictionary:
-            args_dictionary['output_file'] = 'hidden_' + args_dictionary['input_file']
+            file_directory = path.dirname(args_dictionary['input_file'])
+            file_name = path.basename(args_dictionary['input_file'])
+
+            if file_directory != '':
+                final_name = file_directory + '/hidden_' + file_name
+            else:
+                final_name = 'hidden_' + file_name
+
+            args_dictionary['output_file'] = final_name
 
         will_shuffle = True if args_dictionary['operation_method'] == 'shuffle' else False
         input_file = args_dictionary['input_file']

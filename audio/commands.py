@@ -1,6 +1,7 @@
 from audio import methods
 from audio import wav
 from audio import plot
+from os import path
 import utils
 import sys
 
@@ -33,7 +34,15 @@ def main(args_dictionary):
 
             if 'output_file' not in args_dictionary:
                 output_file = utils.replace_file_extension(args_dictionary['input_file'], 'wav')
-                args_dictionary['output_file'] = 'hidden_' + output_file
+                file_directory = path.dirname(output_file)
+                file_name = path.basename(output_file)
+
+                if file_directory != '':
+                    final_name = file_directory + '/hidden_' + file_name
+                else:
+                    final_name = 'hidden_' + file_name
+
+                args_dictionary['output_file'] = final_name
 
             will_shuffle = True if args_dictionary['operation_method'] == 'shuffle' else False
             input_file = args_dictionary['input_file']
@@ -76,7 +85,7 @@ def main(args_dictionary):
             if 'channel' not in args_dictionary:
                 print('Channel not specified. Will be used the channel 1 as default')
             else:
-                channel = args_dictionary['channel'] + 1
+                channel = int(args_dictionary['channel']) - 1
 
             # get channel data
             channel_data = wav.channel_bytes(data, channel)

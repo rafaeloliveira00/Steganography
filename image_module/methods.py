@@ -1,9 +1,9 @@
 from image_module import bytes_manipulation as bm
+from os import path
 import cv2 as cv
 import message
 import utils
 import sys
-import os
 
 
 def sequence_hide(image_file, result_file, message_file, shuffle=False):
@@ -39,11 +39,8 @@ def sequence_hide(image_file, result_file, message_file, shuffle=False):
     # write the result
     cv.imwrite(result_file, modified_frame)
 
-    # get the file name
-    message_file_name = os.path.basename(message_file)
-
     # generate the file to retrieve the message
-    utils.generate_key_file(message_file_name, len(message_bytes), index_dict)
+    utils.generate_key_file(message_file, len(message_bytes), index_dict)
 
     print('Message hidden successful')
 
@@ -83,8 +80,15 @@ def sequence_retrieve(image_file, key_file):
     # retrieve the hidden data
     retrieved_data = bm.retrieve_in_frame(frame, bytes_length, dictionary)
 
+    # calculate the output file location
+    file_directory = path.dirname(image_file)
+    if file_directory != '':
+        final_name = file_directory + '/' + result_file
+    else:
+        final_name = result_file
+
     # create the file
-    result = message.write_file(result_file, retrieved_data)
+    result = message.write_file(final_name, retrieved_data)
 
     if result:
         print('Message extracted successful')
