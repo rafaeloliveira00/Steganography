@@ -3,6 +3,7 @@ from audio import wav
 from os import path
 import message
 import utils
+import sys
 import os
 
 
@@ -35,7 +36,8 @@ def hide(audio_file_input, audio_file_output, message_file, will_shuffle=False):
         pass
     # if not, then it was given an incorrect extension of a file
     else:
-        assert 'The output file can only be .wav or .flac types'
+        print('The output file can only be .wav or .flac format')
+        sys.exit()
 
     # begin the encoding
     sequence_hide(audio_file_input, audio_file_output, message_file, will_shuffle)
@@ -105,7 +107,9 @@ def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
     # get the number of bytes that can be hidden
     max_data = wav.bytes_to_hide_count(original_song)
 
-    assert max_data > len(message_bytes), 'Not enough space to hide the message'
+    if max_data < len(message_bytes):
+        print('Not enough space to hide the message')
+        sys.exit()
 
     index_dict = None
 

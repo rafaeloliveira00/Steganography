@@ -16,4 +16,4 @@ def show_information(frame):
     print(f'Rows: {rows}')
     print(f'Columns: {cols}')
     print(f'Total of pixels: {total_pixels}')
-    print(f'Number of total bytes that can be hidden: {total_byte}')
+    print(f'Number of bytes that can be hidden: {total_byte}')

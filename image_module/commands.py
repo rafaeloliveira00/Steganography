@@ -2,6 +2,7 @@ from image_module import methods
 from image_module import image
 from os import path
 import cv2 as cv
+import utils
 import sys
 
 
@@ -37,6 +38,8 @@ def main(args_dictionary):
                 final_name = file_directory + '/hidden_' + file_name
             else:
                 final_name = 'hidden_' + file_name
+
+            final_name = utils.replace_file_extension(final_name, 'png')
 
             args_dictionary['output_file'] = final_name
 

@@ -27,7 +27,9 @@ def sequence_hide(image_file, result_file, message_file, shuffle=False):
     # open the file to hide and get the bytes
     message_bytes = message.read_file(message_file)
 
-    assert bm.check_size(frame, len(message_bytes)) is True, 'The given data can not be hidden in the frame'
+    if bm.check_size(frame, len(message_bytes)) is False:
+        print('The given data can not be hidden in the frame')
+        sys.exit()
 
     index_dict = None
     if shuffle:

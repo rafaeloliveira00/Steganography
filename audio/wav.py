@@ -153,7 +153,7 @@ def show_information(file_data, rate):
     """
     print(f"Number of channels: {channel_count(file_data)}")
     print(f"Rate: {rate} Hz")
-    print(f"Number of bytes per channel: {bytes_count(file_data)}")
+    print(f"Number of samples per channel: {bytes_count(file_data)}")
     print(f"Number of total bytes that can be hidden: {bytes_to_hide_count(file_data)}")
 
 
