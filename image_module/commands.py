@@ -43,12 +43,19 @@ def main(args_dictionary):
 
             args_dictionary['output_file'] = final_name
 
+        # dictionary containing the indexes list
+        dict_index = None
+
+        # if the user input a key file then he wants to use a defined index lists
+        if 'key_file' in args_dictionary:
+            dict_index = utils.read_key_index(args_dictionary['key_file'])
+
         will_shuffle = True if args_dictionary['operation_method'] == 'shuffle' else False
         input_file = args_dictionary['input_file']
         output_file = args_dictionary['output_file']
         message_file = args_dictionary['message_file']
 
-        methods.sequence_hide(input_file, output_file, message_file, will_shuffle)
+        methods.sequence_hide(input_file, output_file, message_file, will_shuffle, dict_index)
 
     # decode option
     elif args_dictionary['operation'] == 'decode':

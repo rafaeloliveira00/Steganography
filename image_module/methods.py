@@ -6,7 +6,7 @@ import utils
 import sys
 
 
-def sequence_hide(image_file, result_file, message_file, shuffle=False):
+def sequence_hide(image_file, result_file, message_file, shuffle=False, dict_index=None):
     """Method to hide the message, it consists in hiding the message sequential along the pixels.
 
         Parameters:
@@ -14,6 +14,7 @@ def sequence_hide(image_file, result_file, message_file, shuffle=False):
           result_file: Location to save the modified audio file
           message_file: Location of the file to hide
           shuffle: if true then the shuffle method will be used
+          dict_index: dictionary containing the index lists
 
     """
 
@@ -31,8 +32,11 @@ def sequence_hide(image_file, result_file, message_file, shuffle=False):
         print('The given data can not be hidden in the frame')
         sys.exit()
 
-    index_dict = None
-    if shuffle:
+    # equals to dict_index, if the user did not input no dict_index then it is None and one will be generated
+    index_dict = dict_index
+
+    # check if it is necessary to generate dictionary of indexes
+    if shuffle and index_dict is None:
         # generate the dictionary of indexes
         index_dict = utils.generate_dictionary(10)
 

@@ -1,4 +1,4 @@
-from  os import path
+from os import path
 import random
 import json
 import sys
@@ -183,3 +183,35 @@ def read_key_file(location):
         sys.exit()
 
     return data
+
+
+def read_key_index(location):
+    """Read the file and return only the inverted indexes list
+
+           Parameters:
+             location: Location of file
+
+           Returns:
+             Dictionary containing the index lists
+
+       """
+    try:
+        with open(location) as json_file:
+            data = json.load(json_file)
+
+        dict_index_lists = data['indexes_dictionary']
+
+        # convert the indexes dictionary keys to int
+        dict_index_lists = {int(k): v for k, v in dict_index_lists.items()}
+
+        # invert the dictionary to write
+        dict_index_lists = invert_dictionary(dict_index_lists)
+
+    except FileNotFoundError:
+        print("The key file doesn't exist or no read permissions")
+        sys.exit()
+    except KeyError:
+        print("Key file is invalid")
+        sys.exit()
+
+    return dict_index_lists

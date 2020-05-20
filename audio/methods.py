@@ -7,7 +7,7 @@ import sys
 import os
 
 
-def hide(audio_file_input, audio_file_output, message_file, will_shuffle=False):
+def hide(audio_file_input, audio_file_output, message_file, will_shuffle=False, dict_index=None):
     """Method responsible to manage the files, it will convert the audio formats if necessary before starting the
     coding of the data
 
@@ -16,6 +16,7 @@ def hide(audio_file_input, audio_file_output, message_file, will_shuffle=False):
           audio_file_output: Location to save the modified audio file
           message_file: Location of the file to hide
           will_shuffle: if true then the shuffle method will be used
+          dict_index: dictionary containing the index lists
 
     """
     input_input_extension = utils.get_file_extension(audio_file_input)
@@ -40,7 +41,7 @@ def hide(audio_file_input, audio_file_output, message_file, will_shuffle=False):
         sys.exit()
 
     # begin the encoding
-    sequence_hide(audio_file_input, audio_file_output, message_file, will_shuffle)
+    sequence_hide(audio_file_input, audio_file_output, message_file, will_shuffle, dict_index)
 
     # if the user wanted an flac file, lets convert it
     if output_input_extension == 'flac':
@@ -83,7 +84,7 @@ def retrieve(audio_file_input, key_file):
         os.remove(audio_file_input)
 
 
-def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
+def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False, dict_index=None):
     """Method to hide the message, it consists in hiding the message sequential along the channels,
     if shuffle mode is activated then, every bit of every byte will be shuffled with a generated dictionary.
     After the message is hidden a file is created to retrieve the original message
@@ -93,6 +94,7 @@ def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
           result_audio_file: Location to save the modified audio file
           message_file: Location of the file to hide
           shuffle: if true then the shuffle method will be used
+          dict_index: dictionary containing the index lists
 
     """
     # open the audio file
@@ -111,9 +113,11 @@ def sequence_hide(audio_file, result_audio_file, message_file, shuffle=False):
         print('Not enough space to hide the message')
         sys.exit()
 
-    index_dict = None
+    # equals to dict_index, if the user did not input no dict_index then it is None and one will be generated
+    index_dict = dict_index
 
-    if shuffle:
+    # check if it is necessary to generate dictionary of indexes
+    if shuffle and index_dict is None:
         # generate the dictionary of indexes
         index_dict = utils.generate_dictionary(10)
 
