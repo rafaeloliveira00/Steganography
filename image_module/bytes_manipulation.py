@@ -16,7 +16,7 @@ def check_size(frame, n_bytes_message):
     """
     total_pixels = frame.shape[0] * frame.shape[1]
 
-    t = total_pixels / 3
+    t = total_pixels // 3
     return t >= n_bytes_message
 
 

@@ -215,3 +215,21 @@ def read_key_index(location):
         sys.exit()
 
     return dict_index_lists
+
+
+def generate_file_only_index_lists(location):
+    """Creates a file with randomly generated indexes lists
+
+           Parameters:
+             location: Location of file
+
+       """
+
+    index_lists = generate_dictionary(10)
+
+    dictionary = {
+        "indexes_dictionary": index_lists
+    }
+
+    with open(location, 'w') as fp:
+        json.dump(dictionary, fp)

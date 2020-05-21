@@ -39,7 +39,7 @@ def main(args_dictionary):
             else:
                 final_name = 'hidden_' + file_name
 
-            final_name = utils.replace_file_extension(final_name, 'png')
+            final_name = utils.replace_file_extension(final_name, 'avi')
 
             args_dictionary['output_file'] = final_name
 

@@ -2,6 +2,7 @@ from image_module import commands as image_commands
 from audio import commands as audio_commands
 from video import commands as video_commands
 from os import path
+import utils
 import sys
 
 
@@ -18,6 +19,15 @@ def check_file(file, name):
         sys.exit()
 
 
+def generate_key_file():
+    """Generates a file containing index lists randomly generated
+
+    """
+    utils.generate_file_only_index_lists('keys')
+    print('File created successfully')
+    sys.exit()
+
+
 help_message = '''
 The first argument must be the type of steganography that you want (audio/image/video) only audio is working wight now.
 
@@ -25,6 +35,7 @@ The first argument must be the type of steganography that you want (audio/image/
 -i specify the input file (the one that the message will be hidden)
 -o specify the output file (where to save the file, may be optional)
 -m location of the file to hide
+-generatekeys creates a file containing a randomly generated index lists (must be the only argument)
 
 -- Audio --
 -encode simple|shuffle define that the message will be hidden using one of the given methods (if no method is defined, 
@@ -52,6 +63,8 @@ args = sys.argv
 
 # audio / image / video
 try:
+    if args[1] == '-generatekeys':
+        generate_key_file()
     steganography_type = args[1]
 except IndexError:
     print(help_message)
