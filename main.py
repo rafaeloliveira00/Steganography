@@ -1,5 +1,6 @@
 from image_module import commands as image_commands
 from audio import commands as audio_commands
+from video import commands as video_commands
 from os import path
 import sys
 
@@ -27,7 +28,7 @@ The first argument must be the type of steganography that you want (audio/image/
 
 -- Audio --
 -encode simple|shuffle define that the message will be hidden using one of the given methods (if no method is defined, 
-    the simple method will be used)
+    the simple method will be used), -k argument may be used to specify a pre-defined index lists
 -decode specify that the message will be decoded
 -info will show information about the audio file
 -plot will show a spectrogram of the given file. To specify the channel to show in the plot use -c otherwise the first
@@ -35,9 +36,15 @@ The first argument must be the type of steganography that you want (audio/image/
 
 -- Image --
 -encode simple|shuffle define that the message will be hidden using one of the given methods (if no method is defined, 
-    the simple method will be used)
+    the simple method will be used), -k argument may be used to specify a pre-defined index lists
 -decode specify that the message will be decoded
--info will show information about the audio file
+-info will show information about the image file
+
+-- Image --
+-encode simple|shuffle define that the message will be hidden using one of the given methods (if no method is defined, 
+    the simple method will be used), -k argument may be used to specify a pre-defined index lists
+-decode specify that the message will be decoded
+-info will show information about the video file
            '''
 
 # get the arguments
@@ -103,8 +110,8 @@ if '-k' in args:
 if '-c' in args:
     args_dictionary['channel'] = args[args.index('-c') + 1]
 
-if steganography_type != 'audio' and steganography_type != 'image':
-    print("First argument must be 'audio' or 'image'!")
+if steganography_type != 'audio' and steganography_type != 'image' and steganography_type != 'video':
+    print("First argument must be 'audio', 'image' or 'video'!")
     sys.exit()
 elif 'operation' not in args_dictionary:
     print('Missing operation!')
@@ -115,3 +122,5 @@ if steganography_type == 'audio':
     audio_commands.main(args_dictionary)
 elif steganography_type == 'image':
     image_commands.main(args_dictionary)
+elif steganography_type == 'video':
+    video_commands.main(args_dictionary)

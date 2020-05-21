@@ -14,7 +14,7 @@ def sequence_hide(image_file, result_file, message_file, shuffle=False, dict_ind
           result_file: Location to save the modified audio file
           message_file: Location of the file to hide
           shuffle: if true then the shuffle method will be used
-          dict_index: dictionary containing the index lists
+          dict_index: dictionary containing the index lists (optional)
 
     """
 

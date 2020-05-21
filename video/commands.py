@@ -1,5 +1,5 @@
-from image_module import methods
-from image_module import image
+from video import methods
+from video import video
 from os import path
 import utils
 import cv2
@@ -55,7 +55,7 @@ def main(args_dictionary):
         output_file = args_dictionary['output_file']
         message_file = args_dictionary['message_file']
 
-        methods.sequence_hide(input_file, output_file, message_file, will_shuffle, dict_index)
+        methods.hide(input_file, output_file, message_file, will_shuffle, dict_index)
 
     # decode option
     elif args_dictionary['operation'] == 'decode':
@@ -67,9 +67,9 @@ def main(args_dictionary):
         input_file = args_dictionary['input_file']
         key_file = args_dictionary['key_file']
 
-        methods.sequence_retrieve(input_file, key_file)
+        methods.retrieve(input_file, key_file)
 
     # information option
     elif args_dictionary['operation'] == 'info':
-        frame = cv2.imread(args_dictionary['input_file'])
-        image.show_information(frame)
+        video_file = cv2.VideoCapture(args_dictionary['input_file'])
+        video.show_information(video_file)
