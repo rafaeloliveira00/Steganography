@@ -62,7 +62,7 @@ py main.py video -i original_video.mp4 -o video_with_message.avi -m somezip.zip 
 py main.py video -i video_with_message.avi -k keys -decode
 ```
 
-## All commands commands
+## All commands
 
 | Arguments       |Reference                         |
 |----------------|-------------------------------|
