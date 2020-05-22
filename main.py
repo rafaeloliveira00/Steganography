@@ -51,7 +51,7 @@ The first argument must be the type of steganography that you want (audio/image/
 -decode specify that the message will be decoded
 -info will show information about the image file
 
--- Image --
+-- Video --
 -encode simple|shuffle define that the message will be hidden using one of the given methods (if no method is defined, 
     the simple method will be used), -k argument may be used to specify a pre-defined index lists
 -decode specify that the message will be decoded

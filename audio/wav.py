@@ -1,6 +1,7 @@
 import scipy.io.wavfile as sci_wav
 import numpy as np
 import subprocess
+import utils
 import os
 
 
@@ -157,22 +158,6 @@ def show_information(file_data, rate):
     print(f"Number of total bytes that can be hidden: {bytes_to_hide_count(file_data)}")
 
 
-def check_ffmpeg():
-    """Check if FFMPEG is installed on the system
-
-         Returns:
-          True if is installed otherwise False
-
-    """
-    try:
-        subprocess.call(['ffmpeg'], stderr=subprocess.DEVNULL)
-
-    except FileNotFoundError:
-        return False
-
-    return True
-
-
 def convert_audio_file(input_file, output_file, delete=False):
     """Convert the format of an audio file to another, the output file will be overwritten
 
@@ -185,7 +170,7 @@ def convert_audio_file(input_file, output_file, delete=False):
           True if it succeeds otherwise False
 
     """
-    assert check_ffmpeg(), 'FFMPEG must be installed on the system'
+    assert utils.check_ffmpeg(), 'FFMPEG must be installed on the system'
     try:
         subprocess.call(['ffmpeg', '-i', input_file, '-y', output_file], stderr=subprocess.DEVNULL)
     except FileNotFoundError:

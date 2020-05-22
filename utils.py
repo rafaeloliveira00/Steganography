@@ -1,4 +1,5 @@
 from os import path
+import subprocess
 import random
 import json
 import sys
@@ -233,3 +234,45 @@ def generate_file_only_index_lists(location):
 
     with open(location, 'w') as fp:
         json.dump(dictionary, fp)
+
+
+def check_ffmpeg():
+    """Check if FFMPEG is installed on the system
+
+         Returns:
+          True if is installed otherwise False
+
+    """
+    try:
+        subprocess.call(['ffmpeg'], stderr=subprocess.DEVNULL)
+
+    except FileNotFoundError:
+        return False
+
+    return True
+
+
+def change_file_name(name, name_to_change):
+    """Changes a string representing a file name, including directory locations. To note that his function only changes
+    the string and not the actual file
+
+           Parameters:
+             name: File name
+             name_to_change: Name to change to
+
+           Returns:
+             Changed file name
+
+       """
+
+    # get the file name from the given directory
+    name_to_change = os.path.basename(name_to_change)
+
+    # get the directory
+    dir_path = os.path.dirname(name)
+
+    result = name_to_change
+    if dir_path is not '':
+        result = dir_path + '/' + name_to_change
+
+    return result

@@ -62,6 +62,7 @@ def hide(video_file_input, video_file_output, message_file, will_shuffle=False, 
         print('Insufficient space to hide the message')
         sys.exit()
 
+    print('Generating file...')
     # loop thought the video frame by frame
     while video_file.isOpened():
         ret, frame = video_file.read()
@@ -93,6 +94,11 @@ def hide(video_file_input, video_file_output, message_file, will_shuffle=False, 
 
     video_file.release()
     writer.release()
+
+    # copy the audio stream from the original file to the carrier file
+    video.copy_audio(video_file_input, video_file_output)
+
+    print('File created successfully')
 
 
 def retrieve(video_file_location, key_file):
