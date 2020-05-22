@@ -22,6 +22,11 @@ def hide(audio_file_input, audio_file_output, message_file, will_shuffle=False, 
     input_input_extension = utils.get_file_extension(audio_file_input)
     # if the file extension is not wav then convert it to wav extension
     if input_input_extension != 'wav':
+
+        if utils.check_ffmpeg() is False:
+            print('FFmpeg must be installed on the system to use a different format then wav')
+            sys.exit()
+
         new_file = utils.replace_file_extension(audio_file_input, 'wav')
         wav.convert_audio_file(audio_file_input, new_file)
         audio_file_input = new_file
@@ -30,6 +35,9 @@ def hide(audio_file_input, audio_file_output, message_file, will_shuffle=False, 
     output_input_extension = utils.get_file_extension(audio_file_output)
     # if is flac file, convert to flac
     if output_input_extension == 'flac':
+        if utils.check_ffmpeg() is False:
+            print('FFmpeg must be installed on the system to use a different format then wav')
+            sys.exit()
         # first save with wav extension and after the file was been save, convert the file to flac
         audio_file_output = utils.replace_file_extension(audio_file_output, 'wav')
     # if is wav file, do nothing

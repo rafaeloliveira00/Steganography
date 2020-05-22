@@ -50,7 +50,7 @@ py main.py image -i image_with_message.png -k keys -decode
 ```
 
 ## Video
-Any video file may be used as the input but, the ourput must be avi, a container that supports raw video.
+Any video file may be used as the input but, the output must be avi, a container that supports raw video. FFmpeg is required to copy the audio stream from the original movie file to the carrier file.
 
 **Hide file using shuffle mode**
 ```
